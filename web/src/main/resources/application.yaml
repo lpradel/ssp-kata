@@ -1,0 +1,10 @@
+spring:
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ssp</artifactId>
+        <groupId>com.lukaspradel</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ssp-docker</artifactId>
+
+    <properties>
+        <main.basedir>${project.basedir}${file.separator}..</main.basedir>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.lukaspradel</groupId>
+            <artifactId>ssp-web</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.40.1</version>
+                <configuration>
+                    <images>
+                        <image>
+                            <alias>ssp</alias>
+                            <name>lpradel/ssp:latest</name>
+
+                            <build>
+                                <from>openjdk:17-alpine</from>
+                                <ports>
+                                    <port>8080/tcp</port>
+                                </ports>
+                                <healthCheck>
+                                    <interval>1m</interval>
+                                    <timeout>1s</timeout>
+                                    <retries>3</retries>
+                                    <cmd>wget http://localhost:8080/actuator/health || exit 1</cmd>
+                                </healthCheck>
+                                <assembly>
+                                    <inline>
+                                        <files>
+                                            <file>
+                                                <source>
+                                                    ${main.basedir}${file.separator}web${file.separator}target${file.separator}/ssp.jar
+                                                </source>
+                                            </file>
+                                        </files>
+                                    </inline>
+                                </assembly>
+                                <cmd>
+                                    <shell>java -jar maven/ssp.jar</shell>
+                                </cmd>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>sources</id>
+                        <goals>
+                            <goal>source</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

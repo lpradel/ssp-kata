@@ -1,0 +1,6 @@
+version: '3'
+services:
+  ssp:
+    image: lpradel/ssp
+    ports:
+      - 8080:8080
