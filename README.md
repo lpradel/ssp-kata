@@ -1,6 +1,6 @@
 :scissors: Schere :rock: Stein :scroll: Papier Kata
 ==================
-
+![example workflow](https://github.com/lpradel/ssp-kata/actions/workflows/maven.yml/badge.svg)
 
 ## Installation
 
